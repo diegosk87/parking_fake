@@ -1,5 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HomeService } from './services/home.service';
 
 @Component({
   selector: 'app-home',
@@ -11,40 +13,29 @@ export class HomeComponent implements OnInit {
   public form:FormGroup;
   public submitted:boolean = false;
   public selectTiposLoading:boolean = false;
-  public selectTipos:Array<any> = [
-    {
-      name: 'Privado',
-      id: 1
-    }
-  ];
+
+
+  public estancias:Array<any> = [];
   public loading:boolean = false;
 
-  public data:Array<any> = [
-    {
-      first: "first",
-      last: "last",
-      handle: "handle",
-    },
-    {
-      first: "first1",
-      last: "last1",
-      handle: "handle1",
-    },
-    {
-      first: "first2",
-      last: "last2",
-      handle: "handle2",
-    },
-    {
-      first: "first3",
-      last: "last3",
-      handle: "handle3",
-    }
-  ]
+  public data:Array<any> = [];
 
-  constructor(private _formBuilder:FormBuilder) { }
+  constructor(
+    private _formBuilder:FormBuilder,
+    private _homeService:HomeService
+    ) { }
 
   ngOnInit(): void {
+
+    this._homeService.getEstancias().subscribe({
+      next:(data)=>{
+        this.estancias = data;
+        console.log(data);
+      },
+      error:err=>{
+        console.log(err);
+      }
+    })
 
     this.form = this._formBuilder.group({
       placa:["",Validators.required],
@@ -68,11 +59,7 @@ export class HomeComponent implements OnInit {
   }
 
   public onSubmit():void {
-    this.data.push( {
-      first: "first",
-      last: "last",
-      handle: "handle",
-    });
+    
 
     // this.submitted = true;
     // if(this.form.invalid) return;

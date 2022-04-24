@@ -4,12 +4,21 @@
       <app-content-header [contentHeader]="contentHeader"></app-content-header>
   
       <div class="row">
+
+            <div class="col-12">
+              <div class="card">
+                  <div class="card-body">
+                      <button class="btn btn-primary">Comienza Mes</button>
+                  </div>
+              </div>
+          </div>
           <div class="col-12">
               <div class="card">
                   <div class="card-body">
                     <form [formGroup]="form" (ngSubmit)="onSubmit()">
                         <div class="row d-flex align-items-center">
                             <div class="form-group col-10">
+                                <h3>Generar Informe de Pagos de Residentes</h3>
                                 <label for="filename">Nombre del archvivo</label>
                                 <input
                                     type="text"
@@ -32,16 +41,32 @@
                             </div>
                         </div>
                     </form>
+
+                    <div id="htmlData">
+                        <table class="table">
+                            <thead>
+                              <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Núm. placa</th>
+                                <th scope="col">Tiempo estacionado (min.)</th>
+                                <th scope="col">Cantidad a pagar</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let estancia of estancias; let i = index">
+                                <th scope="row">{{i + 1}}</th>
+                                <td>{{estancia.placa}}</td>
+                                <td>{{estancia.tiempo_total}}</td>
+                                <td>{{estancia.saldo_vencido}}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                    </div>
                   </div>
+                  
               </div>
           </div>
-          <div class="col-12">
-              <div class="card">
-                  <div class="card-body">
-                      <button class="btn btn-primary"> Reiniciar Mes</button>
-                  </div>
-              </div>
-          </div>
+          
       </div>
     </div>
   </div>

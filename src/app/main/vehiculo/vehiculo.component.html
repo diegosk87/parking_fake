@@ -27,7 +27,7 @@
                             <label for="tipo">Tipo</label>
                             <ng-select
                                 [items]="selectTipos"
-                                bindLabel="name"
+                                bindLabel="tipo"
                                 bindValue="id"
                                 [loading]="selectTiposLoading"
                                 formControlName="tipo"
@@ -51,7 +51,22 @@
           <div class="col-8">
               <div class="card">
                   <div class="card-body">
-                      hola
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Placa</th>
+                            <th scope="col">Tipo</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let vehiculo of vehiculos; let i = index">
+                            <th scope="row">{{i + 1}}</th>
+                            <td>{{vehiculo.placa}}</td>
+                            <td>{{vehiculo.tipo}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
                   </div>
               </div>
           </div>

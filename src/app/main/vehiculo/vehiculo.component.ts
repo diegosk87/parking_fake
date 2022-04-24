@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { VehiculosService } from './services/vehiculos.service';
 
 @Component({
   selector: 'app-vehiculo',
@@ -11,17 +12,37 @@ export class VehiculoComponent implements OnInit {
   public form:FormGroup;
   public submitted:boolean = false;
   public selectTiposLoading:boolean = false;
-  public selectTipos:Array<any> = [
-    {
-      name: 'Privado',
-      id: 1
-    }
-  ];
+  public selectTipos:Array<any> = [];
   public loading:boolean = false;
 
-  constructor(private _formBuilder:FormBuilder) { }
+  public vehiculos:Array<any> = [];
+
+  constructor(
+    private _formBuilder:FormBuilder,
+    private _vehiculosService:VehiculosService
+  ) { }
 
   ngOnInit(): void {
+
+    this._vehiculosService.getVehiculos().subscribe({
+      next:(data)=>{
+        this.vehiculos = data;
+        console.log(data);
+      },
+      error:err=>{
+        console.log(err);
+      }
+    })
+
+    this._vehiculosService.getTipos().subscribe({
+      next:(data)=>{
+        this.selectTipos = data;
+        console.log(data);
+      },
+      error:err=>{
+        console.log(err);
+      }
+    })
 
     this.form = this._formBuilder.group({
       placa:["",Validators.required],
@@ -45,7 +66,7 @@ export class VehiculoComponent implements OnInit {
   public onSubmit():void {
     this.submitted = true;
     if(this.form.invalid) return;
-
+    
     this.loading = true;
   }
 
