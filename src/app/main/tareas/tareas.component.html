@@ -1,0 +1,48 @@
+<div class="content-wrapper container-xxl p-0">
+    <div class="content-body">
+      <!-- content-header component -->
+      <app-content-header [contentHeader]="contentHeader"></app-content-header>
+  
+      <div class="row">
+          <div class="col-12">
+              <div class="card">
+                  <div class="card-body">
+                    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                        <div class="row d-flex align-items-center">
+                            <div class="form-group col-10">
+                                <label for="filename">Nombre del archvivo</label>
+                                <input
+                                    type="text"
+                                    formControlName="filename"
+                                    class="form-control"
+                                    [ngClass]="{ 'is-invalid': submitted && f.filename.errors }"
+                                    placeholder="Rellenar aquí"
+                                    aria-describedby="filename"
+                                    autofocus=""
+                                    tabindex="1"/>
+                                <div *ngIf="submitted && f.filename.errors" class="invalid-feedback">
+                                    <div *ngIf="f.filename.errors.required">Nombre del archivo es requerido</div>
+                                </div>
+                            </div>
+                                
+                            <div class="col-2">
+                                <button [disabled]="loading" class="btn btn-success" tabindex="8" rippleEffect>
+                                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span> Generar Reporte
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                  </div>
+              </div>
+          </div>
+          <div class="col-12">
+              <div class="card">
+                  <div class="card-body">
+                      <button class="btn btn-primary"> Reiniciar Mes</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+  </div>
+  
