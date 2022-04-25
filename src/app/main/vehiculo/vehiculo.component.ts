@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { VehiculosService } from './services/vehiculos.service';
+import { Vehiculo } from './models/vehiculo';
 
 @Component({
   selector: 'app-vehiculo',
@@ -11,11 +12,11 @@ export class VehiculoComponent implements OnInit {
   public contentHeader: object
   public form:FormGroup;
   public submitted:boolean = false;
-  public selectTiposLoading:boolean = false;
+  public selectTiposLoading:boolean = true;
   public selectTipos:Array<any> = [];
   public loading:boolean = false;
 
-  public vehiculos:Array<any> = [];
+  public vehiculos:Array<Vehiculo> = [];
 
   constructor(
     private _formBuilder:FormBuilder,
@@ -23,21 +24,11 @@ export class VehiculoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
-    this._vehiculosService.getVehiculos().subscribe({
-      next:(data)=>{
-        this.vehiculos = data;
-        console.log(data);
-      },
-      error:err=>{
-        console.log(err);
-      }
-    })
-
+    this.cargarVehiculos();
     this._vehiculosService.getTipos().subscribe({
       next:(data)=>{
         this.selectTipos = data;
-        console.log(data);
+        this.selectTiposLoading = false;
       },
       error:err=>{
         console.log(err);
@@ -63,11 +54,40 @@ export class VehiculoComponent implements OnInit {
     }
   }
 
+  private cargarVehiculos(): void {
+    this._vehiculosService.getVehiculos().subscribe({
+      next:(data) => {
+        this.vehiculos = data;
+      },
+      error:err=>{
+        console.log(err);
+      }
+    });
+  }
+
   public onSubmit():void {
     this.submitted = true;
     if(this.form.invalid) return;
-    
+
     this.loading = true;
+
+    this._vehiculosService.postVehiculo({
+      placa: this.form.controls.placa.value,
+      tipo: this.form.controls.tipo.value,
+      descripcion: "hola",
+      tiempo_total: null,
+      saldo_vencido: null
+    }).subscribe({
+      next: vehiculo => {
+        this.cargarVehiculos();
+        console.log(vehiculo);
+        this.loading = false;
+      },
+      error: err => {
+        this.loading = false;
+      }
+    });
+    
   }
 
   get f():any{

@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 import { VehiculosService } from '../vehiculo/services/vehiculos.service';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 @Component({
   selector: 'app-tareas',
@@ -11,7 +10,8 @@ import { VehiculosService } from '../vehiculo/services/vehiculos.service';
   styleUrls: ['./tareas.component.scss']
 })
 export class TareasComponent implements OnInit {
-  public contentHeader: object
+  public tableHeaders:any = [['#', 'Núm. placa', 'Tiempo estacionado (min.)', 'Cantidad a pagar']]
+  public contentHeader: object;
   public form:FormGroup;
   public submitted:boolean = false;
 
@@ -30,9 +30,8 @@ export class TareasComponent implements OnInit {
     private _vehiculosService:VehiculosService) { }
 
   ngOnInit(): void {
-
     this.form = this._formBuilder.group({
-      filename:["",Validators.required]
+      filename:["", Validators.required]
     });
 
     this.contentHeader = {
@@ -53,52 +52,40 @@ export class TareasComponent implements OnInit {
   }
   
   public onSubmit():void {
+    var that = this;
     this.submitted = true;
     if(this.form.invalid) return;
     this.loading = true;
-
+    
     this._vehiculosService.getVehiculos().subscribe({
-      next:(data)=>{
+      next:(data) => {
         this.estancias = data;
-        this.downloadPDF(this.form.get('filename').value);
+        this.downloadPDF(this.form.get('filename').value, data);
         this.loading = false;
       },
-      error:err=>{
+      error:err => {
         console.log(err);
       }
-    })
-
-    
+    });
   }
-
+  
   get f():any{
     return this.form.controls;
   }
+  
+  downloadPDF(filename:string, data) {
+    const doc = new jsPDF('p', 'pt', 'a4');
 
-  downloadPDF(filename:string) {
-    // Extraemos el
-    const DATA = document.getElementById('htmlData');
-    console.log(DATA)
-    // const doc = new jsPDF('p', 'pt', 'a4');
-    // const options = {
-    //   background: 'white',
-    //   scale: 3
-    // };
+    doc.autoTable({
+      head: this.tableHeaders,
+      body: data,
+      theme: 'plain'
+    });
 
-    // html2canvas(DATA, options).then((canvas) => {
-    //   const img = canvas.toDataURL('image/PNG');
+    // below line for Open PDF document in new tab
+    doc.output('dataurlnewwindow')
 
-    //   // Add image Canvas to PDF
-    //   const bufferX = 15;
-    //   const bufferY = 15;
-    //   const imgProps = (doc as any).getImageProperties(img);
-    //   const pdfWidth = doc.internal.pageSize.getWidth() - 2 * bufferX;
-    //   const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    //   doc.addImage(img, 'PNG', bufferX, bufferY, pdfWidth, pdfHeight, undefined, 'FAST');
-    //   return doc;
-    // }).then((docResult) => {
-    //   docResult.save(filename + ".pdf");
-    // });
-}
-
+    // below line for Download PDF document  
+    doc.save(`${filename}.pdf`);
+  }
 }
