@@ -8,7 +8,9 @@
             <div class="col-12">
               <div class="card">
                   <div class="card-body">
-                      <button class="btn btn-primary">Comienza Mes</button>
+                      <button [disabled]="actionLoading" (click)="comienzaMes()" class="btn btn-primary" tabindex="8" rippleEffect>
+                        <span *ngIf="actionLoading" class="spinner-border spinner-border-sm mr-1"></span> Comienza Mes
+                      </button>
                   </div>
               </div>
           </div>
@@ -53,11 +55,11 @@
                               </tr>
                             </thead>
                             <tbody>
-                              <tr *ngFor="let estancia of estancias; let i = index">
+                              <tr *ngFor="let vehiculo of vehiculos; let i = index">
                                 <th scope="row">{{i + 1}}</th>
-                                <td>{{estancia.placa}}</td>
-                                <td>{{estancia.tiempo_total}}</td>
-                                <td>{{estancia.saldo_vencido}}</td>
+                                <td>{{vehiculo.placa}}</td>
+                                <td>{{vehiculo.tiempo_total}}</td>
+                                <td>$ {{vehiculo.saldo_vencido}}</td>
                               </tr>
                             </tbody>
                           </table>

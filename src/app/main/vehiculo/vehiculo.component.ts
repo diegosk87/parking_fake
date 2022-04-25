@@ -75,8 +75,8 @@ export class VehiculoComponent implements OnInit {
       placa: this.form.controls.placa.value,
       tipo: this.form.controls.tipo.value,
       descripcion: "hola",
-      tiempo_total: null,
-      saldo_vencido: null
+      tiempo_total: 0,
+      saldo_vencido: 0
     }).subscribe({
       next: vehiculo => {
         this.cargarVehiculos();

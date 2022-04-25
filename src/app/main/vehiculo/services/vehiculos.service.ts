@@ -26,4 +26,8 @@ export class VehiculosService {
   public postVehiculo(vehiculo:Vehiculo):Observable<Vehiculo> {
     return this._httpClient.post<Vehiculo>(this.urlApi, vehiculo);
   }
+
+  public postComienzaMes(): Observable<any> {
+    return this._httpClient.post(`${this.urlApi}/tareas`, {});
+  }
 }

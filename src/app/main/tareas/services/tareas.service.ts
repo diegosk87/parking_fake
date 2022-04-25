@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Estancia } from 'app/main/home/models/estancia';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 
@@ -8,11 +9,15 @@ import { Observable } from 'rxjs';
 })
 export class TareasService {
 
-  private urlApi:string = environment.apiUrl + "/vehiculos";
+  private urlApi:string = environment.apiUrl + "/estancias";
 
   constructor(private _httpClient:HttpClient) { }
 
-  public getVehiculos():Observable<any>{
-    return this._httpClient.get(this.urlApi);
+  public getEstancias():Observable<Array<Estancia>>{
+    return this._httpClient.get<Array<Estancia>>(this.urlApi);
+  }
+
+  public postComienzaMes(): Observable<any> {
+    return this._httpClient.post(`${this.urlApi}/tareas`, {});
   }
 }

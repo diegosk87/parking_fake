@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HomeService } from './services/home.service';
+import { Estancia } from './models/estancia';
 
 @Component({
   selector: 'app-home',
@@ -15,7 +15,7 @@ export class HomeComponent implements OnInit {
   public selectTiposLoading:boolean = false;
 
 
-  public estancias:Array<any> = [];
+  public estancias:Array<Estancia> = [];
   public loading:boolean = false;
 
   public data:Array<any> = [];
@@ -26,20 +26,10 @@ export class HomeComponent implements OnInit {
     ) { }
 
   ngOnInit(): void {
-
-    this._homeService.getEstancias().subscribe({
-      next:(data)=>{
-        this.estancias = data;
-        console.log(data);
-      },
-      error:err=>{
-        console.log(err);
-      }
-    })
+    this.loadEstancias();
 
     this.form = this._formBuilder.group({
-      placa:["",Validators.required],
-      tipo:["", Validators.required]
+      placa:["",Validators.required]
     });
 
     this.contentHeader = {
@@ -58,13 +48,40 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  private loadEstancias(): void {
+    this._homeService.getEstancias().subscribe({
+      next:(result: Array<Estancia>)=>{
+        this.estancias = result;
+        console.log(result);
+      },
+      error:err=>{
+        console.log(err);
+      }
+    })
+  }
+
   public onSubmit():void {
-    
+    this.submitted = true;
+    if(this.form.invalid) return;
 
-    // this.submitted = true;
-    // if(this.form.invalid) return;
+    this.loading = true;
 
-    // this.loading = true;
+    this._homeService.postEstancia({
+      placa: this.form.controls.placa.value,
+      hora_entrada: null,
+      hora_salida: null,
+      eliminado: null
+    }).subscribe({
+      next: (result:Estancia) => {
+        console.log(result);
+        this.loadEstancias();
+        this.loading = false;
+      },
+      error: err => {
+        console.log(err);
+        this.loading = false;
+      }
+    })
   }
 
   get f():any{
